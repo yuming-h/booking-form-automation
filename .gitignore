@@ -1,3 +1,4 @@
+.DS_Store
 config
 supervisors.py
 client_secret.json
