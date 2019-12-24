@@ -5,7 +5,7 @@ import os.path
 from datetime import datetime, timedelta
 from supervisors import selectSupervisor
 from booking_type import BookingType, getBookingType
-from supervisor_email import send_supervisor_confimation
+from supervisor_email import send_supervisor_confirmation
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow #pylint: disable=import-error
 from google.auth.transport.requests import Request
@@ -74,7 +74,7 @@ def main():
             'email': responses[6],
             'type': getBookingType[responses[7]],
             'daterange': parseDateTime(responses[8], responses[9], responses[10]),
-            
+
             'eventname': responses[11],
             'desc': responses[12],
             'public': True if responses[13] == 'Public' else False,
@@ -107,7 +107,7 @@ def main():
             if needSupervisor == 'y':
                 booking['sup'] = selectSupervisor()
                 print('Sending Email to Supervisor ...')
-                send_supervisor_confirmation(booking, email, pw)
+    #            send_supervisor_confirmation(booking, email, pw)
 
 
 if __name__ == '__main__':
