@@ -3,8 +3,9 @@ import configparser
 import pickle
 import os.path
 from datetime import datetime, timedelta
-from supervisors import selectSupvervisor
+from supervisors import selectSupervisor
 from booking_type import BookingType, getBookingType
+from supervisor_email import send_supervisor_confimation
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow #pylint: disable=import-error
 from google.auth.transport.requests import Request
@@ -19,6 +20,8 @@ config.read('config')
 defaultConfig = config['DEFAULT']
 EVENTS_FORM_ID = defaultConfig['eventsFormID']
 ROOMS_FORM_ID = defaultConfig['roomsFormID']
+EMAIL = defaultConfig['email']
+PASS = defaultConfig['password']
 
 def parseDateTime(date, start, end):
     startDate = datetime.strptime(date+' '+start, '%m/%d/%Y %I:%M:%S %p')
@@ -71,6 +74,7 @@ def main():
             'email': responses[6],
             'type': getBookingType[responses[7]],
             'daterange': parseDateTime(responses[8], responses[9], responses[10]),
+            
             'eventname': responses[11],
             'desc': responses[12],
             'public': True if responses[13] == 'Public' else False,
@@ -82,29 +86,29 @@ def main():
             'sup': None
         }
 
+        for a,b in booking.items():
+            if a == 'daterange':
+                print(a, ': ', b[0].strftime('%m/%d/%Y %H:%M%p - '),
+                     b[1].strftime('%H:%M%p'))
+            else:
+                print(a, ': ', b)
+
+
         approval = input('Approve this booking? [y/n]: ')
         while approval not in ['y','n']:
             approval = input('That is not a valid option. Approve this booking? [y/n]: ')
         
-        if approval == 'n':
-            continue
+        if approval == 'y':
 
-        needSupervisor = input('Assign a supervisor? [y/n]: ')
-        while needSupervisor not in ['y','n']:
-            needSupervisor = input('Assign a Supervisor? [y/n]: ')
-        
-        if needSupervisor == 'y':
-            booking['sup'] = handleSupervisors()
-        
+            needSupervisor = input('Assign a supervisor? [y/n]: ')
+            while needSupervisor not in ['y','n']:
+                needSupervisor = input('Assign a Supervisor? [y/n]: ')
+            
+            if needSupervisor == 'y':
+                booking['sup'] = selectSupervisor()
+                print('Sending Email to Supervisor ...')
+                send_supervisor_confirmation(booking, email, pw)
 
- 
-
-    
-    
-
-
-
-    
 
 if __name__ == '__main__':
    main()
