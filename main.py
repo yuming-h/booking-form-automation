@@ -178,9 +178,10 @@ def main():
         print('Updating calendar ... ')
         update_room_calendar(booking)
 
-        print('Sending Confirmation Email ...')       
+        print('Sending Confirmation Email ...\n')       
 
     print('No Room Requests Left. \n')
+
 if __name__ == '__main__':
    main()
 
