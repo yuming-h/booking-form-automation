@@ -3,6 +3,7 @@ config
 supervisors.py
 client_secret.json
 credentials.json
+cal_credential.json
 token.pickle
 Invoices
 booking_package
