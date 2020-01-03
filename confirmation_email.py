@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 
-def send_confirmation(booking, email, pw):
+def send_room_confirmation(booking, email, pw):
     my_email = email
     send_to = booking['email']
     server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -12,6 +12,53 @@ def send_confirmation(booking, email, pw):
     server.login(my_email, pw)
     event_date = booking['daterange'][0]
 
+    msg = MIMEMultipart()
+    msg['From'] = my_email
+    msg['To'] = send_to
+    msg['Subject'] = 'Abdul Ladha Science Student Centre Room Bookings Confirmation'
+
+    body = """\
+        <div class="gmail_default">Hi,</div>
+        <div class="gmail_default">
+        <div class="gmail_default">
+        <div class="gmail_default"><span style="font-family: arial, helvetica, sans-serif;"><br class="m_2402527658822516095gmail-m_7253113899711740381gmail-m_-1633789672313093095gmail-Apple-interchange-newline" />Thank you for booking the ALSSC!&nbsp; Your event is booked for&nbsp;the following date:&nbsp;</span></div>
+        <div class="gmail_default"><span style="font-family: arial, helvetica, sans-serif;">&nbsp;</span></div>
+        <div class="gmail_default">
+        <div class="gmail_default"><strong>Room """+str(booking['room'])+' Weekly from '+booking['startdate']+""" --&nbsp;</strong><strong>"""+ booking['enddate'] +' '+ booking['starttime'] + ' - ' + booking['endtime']+"""</strong></div>
+        <div><strong>&nbsp;</strong></div>
+        </div>
+        <div class="gmail_default">
+        <div class="gmail_default">
+        <div class="gmail_default">
+        <div class="gmail_default">
+        <p>Please note that the booking time includes setup and cleanup&nbsp;as managed by your organization,&nbsp;and all furniture and equipment must be returned to their original locations.<span style="color: #000000;">&nbsp;</span><span style="color: #000000;"><em>If the cleanup is not done properly, a $100.00 deposit will be charged and you may risk losing booking privileges at the ALSSC in the future.</em></span>&nbsp;There will be an Event Supervisor present during the duration of your booking should you have any questions, concerns, or technical issues.&nbsp;</p>
+        <p>&nbsp;</p>
+        <div>&nbsp;</div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        <p>Best,</p>
+        <p>YuMing He</p>
+        <p><em>Building Manager, Bookings</em></p>
+        <p><em>Science Undergraduate Society of UBC</em></p>
+        </div>
+        </div>
+        """
+    msg.attach(MIMEText(body, 'html'))
+    text = msg.as_string()
+    server.sendmail(my_email, send_to, text)
+    server.quit()
+
+def send_confirmation(booking, email, pw):
+    my_email = email
+    send_to = booking['email']
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(my_email, pw)
+    event_date = booking['daterange'][0]
+    
     msg = MIMEMultipart()
     msg['From'] = my_email
     msg['To'] = send_to

@@ -9,6 +9,7 @@ cal_id = {
     104: 'sus.ubc.ca_5s71t4b60qmlfll20ktfp5a78g@group.calendar.google.com',
     105: 'sus.ubc.ca_5ml80mepktclmrihpjugh4g8k8@group.calendar.google.com'
 }
+
 def format_datetime(datetime):
     yr = str(datetime.year)
     month = str(datetime.month)
@@ -25,9 +26,17 @@ def format_datetime(datetime):
         minute = '0'+minute
     return yr+'-'+month+'-'+day+'T'+hour+':'+minute+':00'
 
-def format_date(date):
+
+def format_recurrence(date):
     li = date.split('/')
-    return li[2]+li[0]+li[1]+'T235900Z'
+    month = li[0]
+    day = li[1]
+    yr = li[2]
+    if len(month) < 2:
+        month = '0'+month
+    if len(day) < 2:
+        day = '0'+day
+    return yr+month+day+'T235900Z'
 
 def update_calendar(booking):
     SCOPES = 'https://www.googleapis.com/auth/calendar'
@@ -55,7 +64,7 @@ def update_calendar(booking):
     event = service.events().insert(calendarId='primary', body=event).execute()
 
 def update_room_calendar(booking):
-    print(format_date(booking['enddate']))
+    
     SCOPES = 'https://www.googleapis.com/auth/calendar'
     store = file.Storage('cal_credential.json')
     creds = store.get()
@@ -76,7 +85,7 @@ def update_room_calendar(booking):
             'timeZone': 'America/Los_Angeles'
             },
         "recurrence": [
-            "RRULE:FREQ=WEEKLY;UNTIL="+ format_date(booking['enddate'])
+            "RRULE:FREQ=WEEKLY;UNTIL="+ format_recurrence(booking['enddate'])
         ],
     }
 

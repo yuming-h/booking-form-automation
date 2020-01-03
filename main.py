@@ -9,7 +9,7 @@ from booking_type import BookingType, getBookingType
 from supervisor_email import send_supervisor_confirmation
 from invoice import generateInvoice
 from event_calendar import update_calendar, update_room_calendar
-from confirmation_email import send_confirmation
+from confirmation_email import send_confirmation, send_room_confirmation
 
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow #pylint: disable=import-error
@@ -171,14 +171,16 @@ def main():
         while approval not in ['y','n']:
             approval = input('That is not a valid option. Approve this booking? [y/n]: ')
 
-        if approval == 'n':
-            continue
+        if approval == 'y':
+            print('Updating calendar ... ')
+            update_room_calendar(booking)
 
+            print('Sending Confirmation Email ...\n')
+            send_room_confirmation(booking,EMAIL, PASS)
 
-        print('Updating calendar ... ')
-        update_room_calendar(booking)
-
-        print('Sending Confirmation Email ...\n')       
+        defaultConfig['lastroom'] = str(int(defaultConfig['lastroom'])+1)
+        with open('config', 'w') as configfile:
+            config.write(configfile)
 
     print('No Room Requests Left. \n')
 
