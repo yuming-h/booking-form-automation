@@ -99,7 +99,7 @@ def main():
         }
 
         for a,b in booking.items():
-            if a == 'daterange':
+            if a in ['daterange', 'sup']:
                 continue
             else:
                 print(a, ': ', b)
@@ -166,7 +166,7 @@ def main():
             if k == 'daterange':
                 continue
             print(k, ': ', v)
-        print(booking['daterange'][0], ' ', booking['daterange'][1])
+
         approval = input('Approve this booking? [y/n]: ')
         while approval not in ['y','n']:
             approval = input('That is not a valid option. Approve this booking? [y/n]: ')
